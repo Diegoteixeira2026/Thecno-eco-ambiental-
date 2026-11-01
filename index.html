@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thecno Eco Ambiental</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f0f4f1;
+  color: #26352c;
+}
+header {
+  background: #176b3a;
+  color: white;
+  padding: 22px;
+  text-align: center;
+}
+main {
+  padding: 15px;
+  max-width: 800px;
+  margin: auto;
+}
+section {
+  background: white;
+  padding: 18px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+}
+input, select, button {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px;
+  margin: 6px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+button {
+  background: #176b3a;
+  color: white;
+  border: none;
+  font-weight: bold;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+td, th {
+  border-bottom: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+.resumo {
+  font-size: 22px;
+  font-weight: bold;
+  color: #176b3a;
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>Thecno Eco Ambiental</h1>
+<p>Sistema de Gestão Ambiental</p>
+</header>
+
+<main>
+
+<section>
+<h2>Painel de Controle</h2>
+<p>Saldo total de materiais:</p>
+<div class="resumo" id="saldo">0 kg</div>
+<p>Total de movimentações:</p>
+<div class="resumo" id="total">0</div>
+</section>
+
+<section>
+<h2>Registrar Movimentação</h2>
+
+<form id="formulario">
+
+<input id="cliente"
+placeholder="Cliente ou fornecedor"
+required>
+
+<select id="material" required>
+<option value="">Selecione o material</option>
+<option>Placas eletrônicas</option>
+<option>Computadores</option>
+<option>Notebooks</option>
+<option>Televisores</option>
+<option>Baterias de lítio</option>
+<option>Baterias de chumbo</option>
+<option>Plástico ABS</option>
+<option>Plástico PS</option>
+<option>Plástico PP</option>
+<option>Plástico ABS/PC</option>
+<option>Cabos elétricos</option>
+<option>Lâmpadas</option>
+<option>Toner e cartuchos</option>
+<option>Outros resíduos</option>
+</select>
+
+<select id="tipo">
+<option value="Entrada">Entrada</option>
+<option value="Saída">Saída</option>
+</select>
+
+<input id="peso"
+type="number"
+step="0.01"
+min="0.01"
+placeholder="Peso em kg"
+required>
+
+<input id="data"
+type="date"
+required>
+
+<button type="submit">
+Salvar Movimentação
+</button>
+
+</form>
+</section>
+
+<section>
+<h2>Histórico de Movimentações</h2>
+<div style="overflow-x:auto">
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Cliente</th>
+<th>Material</th>
+<th>Tipo</th>
+<th>Kg</th>
+</tr>
+</thead>
+<tbody id="historico"></tbody>
+</table>
+</div>
+</section>
+
+<section>
+<h2>Relatório</h2>
+<button onclick="exportar()">
+Exportar Relatório CSV
+</button>
+</section>
+
+</main>
+
+<script>
+const chave = "thecnoeco_movimentacoes";
+let registros = JSON.parse(
+  localStorage.getItem(chave) || "[]"
+);
+
+document.getElementById("data").value =
+  new Date().toLocaleDateString("en-CA");
+
+document.getElementById("formulario")
+.addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const registro = {
+    data: document.getElementById("data").value,
+    cliente: document.getElementById("cliente").value,
+    material: document.getElementById("material").value,
+    tipo: document.getElementById("tipo").value,
+    peso: Number(document.getElementById("peso").value)
+  };
+
+  registros.push(registro);
+  localStorage.setItem(chave, JSON.stringify(registros));
+
+  this.reset();
+  document.getElementById("data").value =
+    new Date().toLocaleDateString("en-CA");
+
+  atualizar();
+  alert("Movimentação registrada!");
+});
+
+function atualizar() {
+  let saldo = 0;
+  let html = "";
+
+  registros.forEach(r => {
+    saldo += r.tipo === "Entrada"
+      ? r.peso : -r.peso;
+
+    html += `<tr>
+      <td>${seguro(r.data)}</td>
+      <td>${seguro(r.cliente)}</td>
+      <td>${seguro(r.material)}</td>
+      <td>${seguro(r.tipo)}</td>
+      <td>${r.peso.toFixed(2)}</td>
+    </tr>`;
+  });
+
+  document.getElementById("saldo").textContent =
+    saldo.toLocaleString("pt-BR") + " kg";
+
+  document.getElementById("total").textContent =
+    registros.length;
+
+  document.getElementById("historico").innerHTML = html;
+}
+
+function seguro(valor) {
+  return String(valor).replace(/[&<>"']/g, c => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[c]));
+}
+
+function exportar() {
+  const linhas = [
+    ["Data","Cliente","Material","Tipo","Peso kg"],
+    ...registros.map(r => [
+      r.data,r.cliente,r.material,r.tipo,r.peso
+    ])
+  ];
+
+  const csv = linhas.map(linha =>
+    linha.map(v =>
+      '"' + String(v).replace(/"/g,'""') + '"'
+    ).join(";")
+  ).join("\r\n");
+
+  const arquivo = new Blob(
+    ["\uFEFF" + csv],
+    {type:"text/csv;charset=utf-8"}
+  );
+
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(arquivo);
+  link.download = "relatorio_thecnoeco.csv";
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+atualizar();
+</script>
+
+</body>
+</html>
