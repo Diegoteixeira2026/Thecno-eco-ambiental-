@@ -2,662 +2,435 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Thecno Eco Ambiental | Gestão</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thecno Eco Ambiental - Gestão</title>
 <style>
-:root{--verde:#176b3a;--claro:#eef5ef}
+:root{--verde:#087747;--escuro:#06462e;--fundo:#f1f5f9}
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:var(--claro);color:#26352c}
-header{background:var(--verde);color:white;text-align:center;padding:18px}
+body{margin:0;background:var(--fundo);font:15px Arial;color:#263238}
+header{background:var(--escuro);color:white;text-align:center;padding:20px}
 header h1{margin:5px;font-size:23px}
-header img{max-width:210px;max-height:110px}
-main{max-width:950px;margin:auto;padding:12px 12px 90px}
-section{background:white;padding:16px;margin-bottom:14px;border-radius:12px}
-h2{color:var(--verde);font-size:20px}
-input,select,textarea,button{width:100%;padding:12px;margin:5px 0;border:1px solid #ccc;border-radius:7px;font-size:15px}
-button{background:var(--verde);color:white;border:0;font-weight:bold;cursor:pointer}
-button:disabled{opacity:.5}
-nav{display:flex;gap:5px;overflow-x:auto;padding:10px;background:white}
-nav button{min-width:105px}
-.oculto{display:none}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
-.card{background:#eef5ef;padding:14px;border-radius:9px}
-.valor{font-size:22px;font-weight:bold;color:var(--verde)}
-table{width:100%;border-collapse:collapse;font-size:13px}
-td,th{padding:9px;border-bottom:1px solid #ddd;text-align:left}
+nav{background:var(--verde);padding:10px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+button{padding:11px 14px;border:0;border-radius:8px;font-weight:bold;cursor:pointer}
+nav button{background:#ffffff25;color:white}
+main{max-width:1100px;margin:auto;padding:15px}
+section{display:none}
+section.ativo{display:block}
+.card{background:white;border-radius:12px;padding:18px;margin-bottom:15px;box-shadow:0 2px 8px #0001}
+h2,h3{color:var(--escuro)}
+label{display:block;font-weight:bold;font-size:13px;margin:10px 0 5px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:7px;font-size:15px}
+textarea{min-height:70px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.verde{background:var(--verde);color:white}
+.azul{background:#dbeafe;color:#1e40af}
+.vermelho{background:#fee2e2;color:#991b1b}
 .tabela{overflow-x:auto}
-small{color:#666}
-footer{position:fixed;bottom:0;background:white;width:100%;display:flex;gap:5px;padding:8px;box-shadow:0 -2px 8px #ccc}
-footer button{font-size:13px}
-@media print{
-nav,footer,button,.naoimprimir{display:none!important}
-section{break-inside:avoid}
-}
+table{width:100%;border-collapse:collapse;margin-top:12px}
+th,td{border-bottom:1px solid #ddd;padding:10px;text-align:left}
+th{background:#e8f5ee}
+.resumo{background:#e8f5ee;padding:15px;border-radius:9px;margin-top:12px}
+.acoes{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+small{color:#64748b}
 </style>
 </head>
 <body>
-
 <header>
-<img id="logo" src="logo.png" alt="Thecno Eco Ambiental"
-onerror="this.style.display='none'">
-<h1>THECNO ECO AMBIENTAL</h1>
-<div>Sistema de Gestão de Coletas</div>
+<h1>♻ THECNO ECO AMBIENTAL</h1>
+<p>Gestão de Coletas • Compras • Vendas • Estoque</p>
 </header>
-
-<nav>
-<button onclick="tela('painel')">Painel</button>
-<button onclick="tela('clientes')">Clientes</button>
-<button onclick="tela('movimentos')">Compra/Venda</button>
-<button onclick="tela('coletas')">Coletas</button>
-<button onclick="tela('ordens')">OS</button>
-<button onclick="tela('precos')">Preços</button>
-<button onclick="tela('estoque')">Estoque</button>
-<button onclick="tela('financeiro')">Financeiro</button>
-<button onclick="tela('relatorios')">Relatórios</button>
-</nav>
-
-<main>
-
-<section id="painel">
-<h2>Painel de Controle</h2>
-<div class="grid">
-<div class="card">Clientes<div class="valor" id="nClientes">0</div></div>
-<div class="card">Movimentações<div class="valor" id="nMov">0</div></div>
-<div class="card">Coletas<div class="valor" id="nColetas">0</div></div>
-<div class="card">Ordens de Serviço<div class="valor" id="nOS">0</div></div>
-</div>
-<h3>Últimas movimentações</h3>
-<div id="ultimas"></div>
-</section>
-
-<section id="clientes" class="oculto">
-<h2>Cadastro de Clientes</h2>
-<form id="formCliente">
-<input id="cNome" placeholder="Nome do cliente" required>
-<input id="cTelefone" placeholder="Telefone / WhatsApp">
-<input id="cPix" placeholder="Chave PIX">
-<input id="cCidade" placeholder="Cidade" required>
-<select id="cTipo">
-<option>Sucateiro</option>
-<option>São Luís</option>
-<option>Interior</option>
-<option>Itapecuru</option>
-<option>Imperatriz</option>
-</select>
-<input id="cEndereco" placeholder="Endereço">
-<input id="cMapa" placeholder="Link da localização do WhatsApp ou Maps">
-<button>Salvar Cliente</button>
-</form>
-<h3>Clientes cadastrados</h3>
-<div id="listaClientes"></div>
-</section>
-
-<section id="movimentos" class="oculto">
-<h2>Compra e Venda</h2>
-<form id="formMov">
-<select id="mTipo">
-<option>Compra</option>
-<option>Venda</option>
-</select>
-<select id="mCliente" required></select>
-<select id="mMaterial" required></select>
-<input id="mQtd" type="number" min=".01" step=".01" placeholder="Quantidade" required>
-<input id="mPreco" type="number" min="0" step=".01" placeholder="Preço unitário R$" required>
-<select id="mResponsavel">
-<option>Diego</option>
-<option>Juan</option>
-<option>Carla</option>
-</select>
-<input id="mData" type="date" required>
-<div class="card">Total: <strong id="mTotal">R$ 0,00</strong></div>
-<button>Salvar Movimentação</button>
-</form>
-<h3>Histórico</h3>
-<div class="tabela"><table>
-<thead><tr><th>Data</th><th>Tipo</th><th>Cliente</th><th>Material</th><th>Qtd.</th><th>Total</th></tr></thead>
-<tbody id="listaMov"></tbody>
-</table></div>
-</section>
-
-<section id="coletas" class="oculto">
-<h2>Programação de Coletas</h2>
-<form id="formColeta">
-<select id="coCliente" required></select>
-<input id="coData" type="date" required>
-<input id="coHora" type="time">
-<select id="coResponsavel">
-<option>Diego</option><option>Juan</option><option>Carla</option>
-</select>
-<select id="coStatus">
-<option>Agendada</option>
-<option>Em andamento</option>
-<option>Concluída</option>
-<option>Cancelada</option>
-</select>
-<textarea id="coObs" placeholder="Materiais e observações"></textarea>
-<button>Salvar Coleta</button>
-</form>
-<div id="listaColetas"></div>
-</section>
-
-<section id="ordens" class="oculto">
-<h2>Ordem de Serviço</h2>
-<form id="formOS">
-<select id="osCliente" required></select>
-<input id="osData" type="date" required>
-<select id="osServico">
-<option>Coleta</option>
-<option>Transporte</option>
-<option>Triagem</option>
-<option>Descaracterização</option>
-<option>Destinação</option>
-</select>
-<select id="osResponsavel">
-<option>Diego</option><option>Juan</option><option>Carla</option>
-</select>
-<select id="osStatus">
-<option>Aberta</option>
-<option>Em andamento</option>
-<option>Concluída</option>
-<option>Cancelada</option>
-</select>
-<textarea id="osMateriais" placeholder="Materiais, quantidades e observações"></textarea>
-<input id="osAssinatura" placeholder="Nome de quem recebeu (opcional)">
-<button>Gerar Ordem de Serviço</button>
-</form>
-<div id="listaOS"></div>
-</section>
-
-<section id="precos" class="oculto">
-<h2>Tabela de Preços</h2>
-<form id="formPreco">
-<select id="pCidade">
-<option>Sucateiro</option><option>São Luís</option>
-<option>Interior</option><option>Itapecuru</option>
-<option>Imperatriz</option>
-</select>
-<select id="pMaterial"></select>
-<input id="pValor" type="number" min="0" step=".01" placeholder="Preço R$" required>
-<button>Salvar Preço</button>
-</form>
-<div id="listaPrecos"></div>
-<button onclick="imprimir()">Imprimir Tabela</button>
-</section>
-
-<section id="estoque" class="oculto">
-<h2>Estoque por Material</h2>
-<div id="listaEstoque"></div>
-<small>Compras aumentam o estoque. Vendas diminuem.</small>
-</section>
-
-<section id="financeiro" class="oculto">
-<h2>Financeiro</h2>
-<p><strong>Atenção:</strong> esta tela ainda não tem proteção real por usuário.</p>
-<div class="grid">
-<div class="card">Compras<div class="valor" id="fCompras"></div></div>
-<div class="card">Vendas<div class="valor" id="fVendas"></div></div>
-<div class="card">Diferença<div class="valor" id="fSaldo"></div></div>
-</div>
-<small>A diferença entre vendas e compras não representa lucro líquido.</small>
-</section>
-
-<section id="relatorios" class="oculto">
-<h2>Relatórios</h2>
-<label>Data inicial</label><input type="date" id="rInicio">
-<label>Data final</label><input type="date" id="rFim">
-<button onclick="exportar()">Exportar Movimentações CSV</button>
-<button onclick="backup()">Baixar Backup JSON</button>
-<label>Restaurar backup</label>
-<input type="file" id="restaurar" accept=".json,application/json">
-<button onclick="imprimir()">Imprimir Relatório</button>
-<p><small>Faça backups regularmente. Os registros ficam apenas neste navegador.</small></p>
-</section>
-
-</main>
-
-<footer>
-<button onclick="tela('movimentos');document.getElementById('mTipo').value='Compra'">+ Compra</button>
-<button onclick="tela('movimentos');document.getElementById('mTipo').value='Venda'">+ Venda</button>
-<button onclick="tela('coletas')">+ Coleta</button>
-<button onclick="tela('ordens')">+ OS</button>
-</footer>
-
+<nav id="menu"></nav>
+<main id="app"></main>
 <script>
-const materiais=[
-["Placa marrom","kg"],
-["Placa intermediária","kg"],
-["Placa alta","kg"],
-["Placa baixa","kg"],
-["Alumínio","kg"],
-["Cobre","kg"],
-["Ferro","kg"],
-["Metal","kg"],
-["Fonte de PC","un"],
-["Televisor","un"],
-["Computador","un"],
-["Notebook","un"],
-["Bateria de lítio","kg"],
-["Bateria de chumbo","kg"],
-["Cabos elétricos","kg"],
-["Outros","kg"]
-];
-
-const chave="thecnoeco_gestao_v1";
+const DBKEY="thecnoeco_gestao_v1";
+const padrao={
+ clientes:[],compras:[],vendas:[],coletas:[],ordens:[],
+ materiais:[
+ {nome:"PLACA MARROM",un:"KG",grupo:"PLACAS",preco:0},
+ {nome:"PLACA INTERMEDIARIA",un:"KG",grupo:"PLACAS",preco:0},
+ {nome:"PLACA ALTA",un:"KG",grupo:"PLACAS",preco:0},
+ {nome:"PLACA BAIXA",un:"KG",grupo:"PLACAS",preco:0},
+ {nome:"ALUMINIO",un:"KG",grupo:"ALUMINIO",preco:0},
+ {nome:"COBRE",un:"KG",grupo:"COBRE",preco:0},
+ {nome:"FERRO",un:"KG",grupo:"OUTROS",preco:0},
+ {nome:"METAL",un:"KG",grupo:"OUTROS",preco:0},
+ {nome:"FONTE PC",un:"UN",grupo:"UNIDADES",preco:0},
+ {nome:"TV",un:"UN",grupo:"UNIDADES",preco:0}
+ ],
+ precos:[],usuario:"Diego"
+};
 let db;
-try{
-db=JSON.parse(localStorage.getItem(chave))||{};
-}catch(e){db={}}
-db.clientes ||= [];
-db.movimentos ||= [];
-db.coletas ||= [];
-db.ordens ||= [];
-db.precos ||= [];
-
+try{db={...padrao,...JSON.parse(localStorage.getItem(DBKEY)||"{}")}}
+catch(e){db=structuredClone(padrao)}
+let itens=[];
+let tela="inicio";
 const $=id=>document.getElementById(id);
-const moeda=n=>Number(n||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-const hoje=()=>new Date().toLocaleDateString("en-CA");
+const dinheiro=n=>Number(n||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const numero=n=>Number(n||0).toLocaleString("pt-BR",{maximumFractionDigits:3});
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const normal=s=>String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase();
-const salvar=()=>{localStorage.setItem(chave,JSON.stringify(db));atualizar()};
-const cliente=id=>db.clientes.find(c=>c.id===Number(id));
-const material=id=>materiais[Number(id)]||["Desconhecido","kg"];
-const uid=()=>Date.now()+Math.floor(Math.random()*1000);
-
-function tela(id){
-document.querySelectorAll("main section").forEach(s=>s.classList.add("oculto"));
-$(id).classList.remove("oculto");
-atualizar();
-window.scrollTo(0,0);
+const id=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const hoje=()=>new Date().toLocaleDateString("en-CA");
+function salvar(){localStorage.setItem(DBKEY,JSON.stringify(db))}
+function normal(s){return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().trim()}
+function opcoes(arr,valor="id",texto="nome"){
+ return arr.map(x=>`<option value="${esc(x[valor])}">${esc(x[texto])}</option>`).join("")
 }
-
-function opcoes(){
-const clientes='<option value="">Selecione o cliente</option>'+
-db.clientes.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join("");
-["mCliente","coCliente","osCliente"].forEach(id=>{
-const anterior=$(id).value;
-$(id).innerHTML=clientes;
-$(id).value=anterior;
-});
-const mats=materiais.map((m,i)=>`<option value="${i}">${esc(m[0])} (${m[1]})</option>`).join("");
-["mMaterial","pMaterial"].forEach(id=>$(id).innerHTML=mats);
-}
-
-$("formCliente").onsubmit=e=>{
-e.preventDefault();
-db.clientes.push({
-id:uid(),nome:normal($("cNome").value),
-telefone:$("cTelefone").value,
-pix:$("cPix").value,
-cidade:$("cCidade").value,
-tipo:$("cTipo").value,
-endereco:$("cEndereco").value,
-mapa:$("cMapa").value
-});
-salvar();e.target.reset();alert("Cliente cadastrado!");
+const paginas={
+ inicio:"Início",clientes:"Clientes",compra:"Compras",
+ venda:"Vendas",coleta:"Coletas",os:"Ordens de Serviço",
+ estoque:"Estoque",precos:"Preços",relatorios:"Relatórios",
+ financeiro:"Financeiro"
 };
-
-function rota(c){
-if(!c)return "#";
-if(c.mapa){
-const url=c.mapa.trim();
-if(/^https:\/\/(www\.)?(google\.[a-z.]+|maps\.app\.goo\.gl)\//i.test(url))return url;
+function abrir(p){
+ tela=p;itens=[];render();
 }
-return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(c.endereco+", "+c.cidade);
+function render(){
+ $("menu").innerHTML=Object.entries(paginas).map(([k,v])=>
+ `<button onclick="abrir('${k}')">${v}</button>`).join("");
+ const fun={
+ inicio:inicio,clientes:clientes,compra:()=>movimento("compra"),
+ venda:()=>movimento("venda"),coleta:coleta,os:os,
+ estoque:estoque,precos:precos,relatorios:relatorios,
+ financeiro:financeiro
+ };
+ $("app").innerHTML=fun[tela]();
 }
-
-function atualizarPreco(){
-const c=cliente($("mCliente").value);
-if(!c)return;
-const p=db.precos.find(p=>p.cidade===c.tipo&&p.material===Number($("mMaterial").value));
-if(p)$("mPreco").value=p.valor;
-calcular();
+function inicio(){
+ return `<div class="card"><h2>Painel principal</h2>
+ <div class="grid">
+ <div class="resumo"><b>Clientes</b><h2>${db.clientes.length}</h2></div>
+ <div class="resumo"><b>Compras</b><h2>${db.compras.length}</h2></div>
+ <div class="resumo"><b>Vendas</b><h2>${db.vendas.length}</h2></div>
+ <div class="resumo"><b>Coletas</b><h2>${db.coletas.length}</h2></div>
+ </div><label>Responsável neste dispositivo</label>
+ <select id="usuario" onchange="db.usuario=this.value;salvar()">
+ ${["Diego","Juan","Carla"].map(n=>`<option ${db.usuario===n?"selected":""}>${n}</option>`).join("")}
+ </select><p><small>Versão local de testes. Selecionar o nome não equivale a login seguro.</small></p>
+ </div>`;
 }
-
-function calcular(){
-$("mTotal").textContent=moeda(Number($("mQtd").value)*Number($("mPreco").value));
+function clientes(){
+ return `<div class="card"><h2>Cadastro de clientes</h2>
+ <form onsubmit="cadastrarCliente(event)">
+ <div class="grid">
+ <div><label>Nome</label><input id="cnome" required></div>
+ <div><label>Telefone</label><input id="ctel"></div>
+ <div><label>PIX</label><input id="cpix"></div>
+ <div><label>Cidade</label><input id="ccidade" required></div>
+ <div><label>Tipologia</label><select id="ctipo">
+ ${["SUCATEIRO","SAO LUIS","INTERIOR","ITAPECURU","IMPERATRIZ"].map(x=>`<option>${x}</option>`).join("")}
+ </select></div>
+ <div><label>Localização (link Maps)</label><input id="clocal" type="url" placeholder="https://maps.google.com/..."></div>
+ </div><div class="acoes"><button class="verde">Salvar cliente</button></div>
+ </form></div>
+ <div class="card"><h3>Clientes cadastrados</h3><div class="tabela">
+ <table><tr><th>Nome</th><th>Cidade</th><th>Telefone</th><th>Localização</th></tr>
+ ${db.clientes.map(c=>`<tr><td>${esc(c.nome)}</td><td>${esc(c.cidade)}</td>
+ <td>${esc(c.tel)}</td><td>${c.local?`<button class="azul" onclick="rota('${c.id}')">Abrir rota</button>`:"-"}</td></tr>`).join("")}
+ </table></div></div>`;
 }
-["mCliente","mMaterial"].forEach(id=>$(id).addEventListener("change",atualizarPreco));
-["mQtd","mPreco"].forEach(id=>$(id).addEventListener("input",calcular));
-
-$("formMov").onsubmit=e=>{
-e.preventDefault();
-const qtd=Number($("mQtd").value),preco=Number($("mPreco").value);
-if(qtd<=0||preco<0)return alert("Confira quantidade e preço.");
-db.movimentos.push({
-id:uid(),tipo:$("mTipo").value,
-  cliente:Number($("mCliente").value),
-material:Number($("mMaterial").value),
-qtd:qtd,
-preco:preco,
-responsavel:$("mResponsavel").value,
-data:$("mData").value
-});
-salvar();
-e.target.reset();
-$("mData").value=hoje();
-calcular();
-alert("Movimentação salva!");
-};
-
-$("formColeta").onsubmit=e=>{
-e.preventDefault();
-db.coletas.push({
-id:uid(),
-cliente:Number($("coCliente").value),
-data:$("coData").value,
-hora:$("coHora").value,
-responsavel:$("coResponsavel").value,
-status:$("coStatus").value,
-obs:$("coObs").value
-});
-salvar();
-e.target.reset();
-$("coData").value=hoje();
-alert("Coleta registrada!");
-};
-
-$("formOS").onsubmit=e=>{
-e.preventDefault();
-db.ordens.push({
-id:uid(),
-numero:db.ordens.reduce((n,o)=>Math.max(n,Number(o.numero)||0),0)+1,
-cliente:Number($("osCliente").value),
-data:$("osData").value,
-servico:$("osServico").value,
-responsavel:$("osResponsavel").value,
-status:$("osStatus").value,
-materiais:$("osMateriais").value,
-assinatura:$("osAssinatura").value
-});
-salvar();
-e.target.reset();
-$("osData").value=hoje();
-alert("Ordem de Serviço criada!");
-};
-
-$("formPreco").onsubmit=e=>{
-e.preventDefault();
-const cidade=$("pCidade").value;
-const mat=Number($("pMaterial").value);
-const valor=Number($("pValor").value);
-if(valor<0)return alert("Preço inválido.");
-
-const existente=db.precos.find(
-p=>p.cidade===cidade&&p.material===mat
-);
-
-if(existente){
-existente.valor=valor;
-}else{
-db.precos.push({
-cidade:cidade,
-material:mat,
-valor:valor
-});
+function cadastrarCliente(e){
+ e.preventDefault();
+ db.clientes.push({id:id(),nome:normal($("cnome").value),
+ tel:$("ctel").value,pix:$("cpix").value,
+ cidade:normal($("ccidade").value),tipo:$("ctipo").value,
+ local:$("clocal").value});
+ salvar();render();alert("Cliente cadastrado!");
 }
-salvar();
-alert("Preço atualizado!");
-};
-
-function atualizar(){
-opcoes();
-
-$("nClientes").textContent=db.clientes.length;
-$("nMov").textContent=db.movimentos.length;
-$("nColetas").textContent=db.coletas.length;
-$("nOS").textContent=db.ordens.length;
-
-$("listaClientes").innerHTML=db.clientes.map(c=>`
-<div class="card">
-<strong>${esc(c.nome)}</strong><br>
-Cidade: ${esc(c.cidade)}<br>
-Tipo: ${esc(c.tipo)}<br>
-Telefone: ${esc(c.telefone)}<br>
-PIX: ${esc(c.pix)}<br>
-Endereço: ${esc(c.endereco)}<br>
-<a href="${esc(rota(c))}" target="_blank"
-rel="noopener noreferrer">
-Abrir rota no Google Maps
-</a>
-</div>
-`).join("")||"Nenhum cliente cadastrado.";
-
-$("listaMov").innerHTML=db.movimentos.map(m=>{
-const c=cliente(m.cliente);
-const mat=material(m.material);
-return `<tr>
-<td>${esc(m.data)}</td>
-<td>${esc(m.tipo)}</td>
-<td>${esc(c?.nome||"")}</td>
-<td>${esc(mat[0])}</td>
-<td>${m.qtd} ${mat[1]}</td>
-<td>${moeda(m.qtd*m.preco)}</td>
-</tr>`;
-}).join("");
-
-$("ultimas").innerHTML=db.movimentos.slice(-5)
-.reverse().map(m=>`
-<div class="card">
-${esc(m.data)} -
-${esc(m.tipo)} -
-${esc(material(m.material)[0])} -
-${moeda(m.qtd*m.preco)}
-</div>
-`).join("")||"Nenhuma movimentação.";
-
-$("listaColetas").innerHTML=db.coletas.map(c=>{
-const cli=cliente(c.cliente);
-return `<div class="card">
-<strong>${esc(cli?.nome||"")}</strong><br>
-Data: ${esc(c.data)}<br>
-Hora: ${esc(c.hora)}<br>
-Responsável: ${esc(c.responsavel)}<br>
-Status: ${esc(c.status)}<br>
-Observações: ${esc(c.obs)}<br>
-<a href="${esc(rota(cli))}" target="_blank"
-rel="noopener noreferrer">Abrir mapa</a>
-</div>`;
-}).join("")||"Nenhuma coleta.";
-
-$("listaOS").innerHTML=db.ordens.map(o=>{
-const c=cliente(o.cliente);
-return `<div class="card">
-<strong>OS Nº ${o.numero}</strong><br>
-Cliente: ${esc(c?.nome||"")}<br>
-Data: ${esc(o.data)}<br>
-Serviço: ${esc(o.servico)}<br>
-Responsável: ${esc(o.responsavel)}<br>
-Status: ${esc(o.status)}<br>
-Materiais: ${esc(o.materiais)}<br>
-Recebimento: ${esc(o.assinatura||"Não informado")}<br>
-<button onclick="imprimirOS(${o.id})">
-Imprimir / Salvar PDF
-</button>
-</div>`;
-}).join("")||"Nenhuma OS.";
-
-$("listaPrecos").innerHTML=`
-<div class="tabela"><table>
-<tr><th>Categoria</th><th>Material</th><th>Preço</th></tr>
-${db.precos.map(p=>`
-<tr>
-<td>${esc(p.cidade)}</td>
-<td>${esc(material(p.material)[0])}</td>
-<td>${moeda(p.valor)}</td>
-</tr>`).join("")}
-</table></div>`;
-
-let estoque={};
-materiais.forEach((m,i)=>estoque[i]=0);
-
-let compras=0;
-let vendas=0;
-
-db.movimentos.forEach(m=>{
-const valor=Number(m.qtd)*Number(m.preco);
-if(m.tipo==="Compra"){
-estoque[m.material]+=Number(m.qtd);
-compras+=valor;
-}else{
-estoque[m.material]-=Number(m.qtd);
-vendas+=valor;
+function rota(cid){
+ const c=db.clientes.find(x=>x.id===cid);
+ if(!c||!c.local)return alert("Cliente sem localização cadastrada.");
+ try{
+ const u=new URL(c.local);
+ if(!["https:","http:"].includes(u.protocol))return;
+ window.open(u.href,"_blank","noopener");
+ }catch(e){alert("Link de localização inválido.");}
 }
-});
-
-$("listaEstoque").innerHTML=`
-<div class="tabela"><table>
-<tr><th>Material</th><th>Quantidade</th></tr>
-${materiais.map((m,i)=>`
-<tr>
-<td>${esc(m[0])}</td>
-<td>${estoque[i].toLocaleString("pt-BR")} ${m[1]}</td>
-</tr>`).join("")}
-</table></div>`;
-
-$("fCompras").textContent=moeda(compras);
-$("fVendas").textContent=moeda(vendas);
-$("fSaldo").textContent=moeda(vendas-compras);
+function seletorClientes(){
+ return `<select id="cliente" required onchange="if(document.getElementById('material'))preencherPreco()"><option value="">Selecione</option>
+ ${opcoes(db.clientes)}</select>`;
 }
-
-function imprimirOS(id){
-const o=db.ordens.find(x=>x.id===id);
-if(!o)return;
-const c=cliente(o.cliente);
-const janela=window.open("","_blank");
-if(!janela){
-alert("Permita a abertura de janelas para imprimir.");
-return;
+function movimento(tipo){
+ return `<div class="card"><h2>${tipo==="compra"?"Nova compra":"Nova venda"}</h2>
+ <label>Cliente</label>${seletorClientes()}
+ <div class="grid">
+ <div><label>Material</label><select id="material" onchange="preencherPreco()">
+ ${db.materiais.map((m,i)=>`<option value="${i}">${esc(m.nome)} (${m.un})</option>`).join("")}
+ </select></div>
+ <div><label>Quantidade</label><input id="quantidade" type="number" step="0.001" min="0.001"></div>
+ <div><label>Preço unitário (R$)</label><input id="valor" type="number" step="0.01" min="0"></div>
+ </div>
+ <div class="acoes"><button class="azul" onclick="adicionarItem()">+ Adicionar material</button></div>
+ <div id="listaItens"></div>
+ <label>Observações</label><textarea id="obs"></textarea>
+ <div class="acoes"><button class="verde" onclick="salvarMovimento('${tipo}')">Salvar ${tipo}</button></div>
+ </div>`;
 }
-janela.document.write(`
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Ordem de Serviço ${o.numero}</title>
-<style>
-body{font-family:Arial;padding:25px}
-h1{color:#176b3a}
-p{padding:7px;border-bottom:1px solid #ddd}
-</style>
-</head>
-<body>
-<h1>THECNO ECO AMBIENTAL</h1>
-<h2>ORDEM DE SERVIÇO Nº ${o.numero}</h2>
-<p>Cliente: ${esc(c?.nome||"")}</p>
-<p>Endereço: ${esc(c?.endereco||"")}</p>
-<p>Cidade: ${esc(c?.cidade||"")}</p>
-<p>Telefone: ${esc(c?.telefone||"")}</p>
-<p>Data: ${esc(o.data)}</p>
-<p>Serviço: ${esc(o.servico)}</p>
-<p>Responsável: ${esc(o.responsavel)}</p>
-<p>Status: ${esc(o.status)}</p>
-<p>Materiais: ${esc(o.materiais)}</p>
-<p>Recebido por: ${esc(o.assinatura||"Não informado")}</p>
-<p>Documento gerado pelo Sistema Thecno Eco Ambiental.</p>
-</body>
-</html>
-`);
-janela.document.close();
-janela.focus();
-setTimeout(()=>janela.print(),500);
+function preencherPreco(){
+ const m=db.materiais[Number($("material").value)];
+ if(!m)return;
+ const c=db.clientes.find(x=>x.id===$("cliente").value);
+ const p=c?db.precos.find(x=>x.material===m.nome&&x.cidade===c.cidade&&x.tipo===c.tipo):null;
+ $("valor").value=p?p.valor:m.preco;
 }
-
-function exportar(){
-const inicio=$("rInicio").value;
-const fim=$("rFim").value;
-
-const dados=db.movimentos.filter(m=>
-(!inicio||m.data>=inicio)&&
-(!fim||m.data<=fim)
-);
-
-const linhas=[
-["Data","Tipo","Cliente","Material",
-"Quantidade","Unidade","Preço","Total","Responsável"],
-...dados.map(m=>[
-m.data,
-m.tipo,
-cliente(m.cliente)?.nome||"",
-material(m.material)[0],
-m.qtd,
-material(m.material)[1],
-m.preco,
-m.qtd*m.preco,
-m.responsavel
-])
-];
-
-const csv=linhas.map(l=>
-l.map(v=>'"'+String(v).replace(/"/g,'""')+'"')
-.join(";")
-).join("\r\n");
-
-baixar(
-"relatorio_thecnoeco.csv",
-"\uFEFF"+csv,
-"text/csv;charset=utf-8"
-);
+function adicionarItem(){
+ const m=db.materiais[Number($("material").value)];
+ const qtd=Number($("quantidade").value),valor=Number($("valor").value);
+ if(!m||!Number.isFinite(qtd)||qtd<=0||$("valor").value===""||valor<0||!Number.isFinite(valor))
+ return alert("Confira quantidade e preço.");
+ itens.push({nome:m.nome,grupo:m.grupo,un:m.un,qtd,valor});
+ mostrarItens();
+ $("quantidade").value="";
 }
-
-function baixar(nome,conteudo,tipo){
-const blob=new Blob([conteudo],{type:tipo});
-const url=URL.createObjectURL(blob);
-const a=document.createElement("a");
-a.href=url;
-a.download=nome;
-document.body.appendChild(a);
-a.click();
-a.remove();
-setTimeout(()=>URL.revokeObjectURL(url),1000);
+function mostrarItens(){
+ $("listaItens").innerHTML=`<div class="tabela"><table>
+ <tr><th>Material</th><th>Qtd.</th><th>Total</th><th></th></tr>
+ ${itens.map((x,i)=>`<tr><td>${esc(x.nome)}</td><td>${numero(x.qtd)} ${x.un}</td>
+ <td>${dinheiro(x.qtd*x.valor)}</td>
+ <td><button class="vermelho" onclick="itens.splice(${i},1);mostrarItens()">X</button></td></tr>`).join("")}
+ </table></div><div class="resumo">
+ <b>Total: ${dinheiro(itens.reduce((s,x)=>s+x.qtd*x.valor,0))}</b><p>
+ Placas: ${numero(itens.filter(x=>x.grupo==="PLACAS").reduce((s,x)=>s+x.qtd,0))} kg |
+ Alumínio: ${numero(itens.filter(x=>x.grupo==="ALUMINIO").reduce((s,x)=>s+x.qtd,0))} kg |
+ Cobre: ${numero(itens.filter(x=>x.grupo==="COBRE").reduce((s,x)=>s+x.qtd,0))} kg |
+ Unidades: ${numero(itens.filter(x=>x.un==="UN").reduce((s,x)=>s+x.qtd,0))}
+ </p></div>`;
 }
-
-function backup(){
-baixar(
-"backup_thecnoeco.json",
-JSON.stringify(db,null,2),
-"application/json"
-);
+function salvarMovimento(tipo){
+ const cliente=$("cliente").value;
+ if(!cliente||!itens.length)return alert("Selecione cliente e adicione materiais.");
+ const registro={id:id(),data:new Date().toISOString(),cliente,
+ responsavel:db.usuario,itens:structuredClone(itens),obs:$("obs").value,
+ total:itens.reduce((s,x)=>s+x.qtd*x.valor,0)};
+ db[tipo==="compra"?"compras":"vendas"].push(registro);
+ salvar();itens=[];render();
+ alert("Registro salvo!");
 }
-
-$("restaurar").addEventListener("change",async e=>{
-const arquivo=e.target.files[0];
-if(!arquivo)return;
-
-try{
-const dados=JSON.parse(await arquivo.text());
-if(
-!dados||
-!Array.isArray(dados.clientes)||
-!Array.isArray(dados.movimentos)
-){
-throw Error("Arquivo inválido");
+function coleta(){
+ return `<div class="card"><h2>Nova coleta</h2>
+ <label>Cliente</label>${seletorClientes()}
+ <div class="grid">
+ <div><label>Data</label><input id="dataColeta" type="date" value="${hoje()}"></div>
+ <div><label>Horário</label><input id="horaColeta" type="time"></div>
+ <div><label>Responsável</label><input id="respColeta" value="${esc(db.usuario)}"></div>
+ <div><label>Status</label><select id="statusColeta">
+ <option>AGENDADA</option><option>EM ANDAMENTO</option><option>CONCLUIDA</option>
+ </select></div></div>
+ <label>Descrição dos materiais</label><textarea id="descColeta"></textarea>
+ <div class="acoes"><button class="verde" onclick="salvarColeta()">Salvar coleta</button></div>
+ </div><div class="card"><h3>Coletas registradas</h3><div class="tabela"><table>
+ <tr><th>Data</th><th>Cliente</th><th>Responsável</th><th>Status</th><th>Rota</th></tr>
+ ${db.coletas.map(c=>`<tr><td>${esc(c.data)}</td><td>${nomeCliente(c.cliente)}</td>
+ <td>${esc(c.responsavel)}</td><td>${esc(c.status)}</td>
+ <td><button class="azul" onclick="rota('${c.cliente}')">Mapa</button></td></tr>`).join("")}
+ </table></div></div>`;
 }
-if(!confirm("Restaurar backup e substituir os dados atuais?")){
-return;
+function nomeCliente(cid){
+ const c=db.clientes.find(x=>x.id===cid);
+ return esc(c?c.nome:"Cliente não encontrado");
 }
-db={
-clientes:dados.clientes,
-movimentos:dados.movimentos,
-coletas:Array.isArray(dados.coletas)?dados.coletas:[],
-ordens:Array.isArray(dados.ordens)?dados.ordens:[],
-precos:Array.isArray(dados.precos)?dados.precos:[]
-};
-salvar();
-alert("Backup restaurado!");
-}catch(erro){
-alert("Erro ao restaurar backup.");
+function salvarColeta(){
+ if(!$("cliente").value)return alert("Selecione o cliente.");
+ db.coletas.push({
+ id:id(),cliente:$("cliente").value,data:$("dataColeta").value,
+ hora:$("horaColeta").value,responsavel:$("respColeta").value,
+ status:$("statusColeta").value,descricao:$("descColeta").value
+ });
+ salvar();render();alert("Coleta salva!");
 }
-});
-
-function imprimir(){
-window.print();
+function os(){
+ return `<div class="card"><h2>Nova ordem de serviço</h2>
+ <p><small>A assinatura do cliente não é obrigatória.</small></p>
+ <label>Cliente</label>${seletorClientes()}
+ <div class="grid">
+ <div><label>Data</label><input id="osData" type="date" value="${hoje()}"></div>
+ <div><label>Responsável</label><input id="osResp" value="${esc(db.usuario)}"></div>
+ <div><label>Tipo de serviço</label><select id="osTipo">
+ <option>COLETA</option><option>TRIAGEM</option>
+ <option>DESCARACTERIZACAO</option><option>TRANSPORTE</option>
+ <option>OUTRO</option></select></div>
+ <div><label>Status</label><select id="osStatus">
+ <option>ABERTA</option><option>EM ANDAMENTO</option>
+ <option>CONCLUIDA</option><option>CANCELADA</option>
+ </select></div></div>
+ <label>Descrição do serviço</label><textarea id="osDesc"></textarea>
+ <div class="acoes"><button class="verde" onclick="salvarOS()">Salvar OS</button></div>
+ </div><div class="card"><h3>Ordens de serviço</h3><div class="tabela"><table>
+ <tr><th>Número</th><th>Cliente</th><th>Serviço</th><th>Status</th><th>Ações</th></tr>
+ ${db.ordens.map(o=>`<tr><td>${esc(o.numero)}</td><td>${nomeCliente(o.cliente)}</td>
+ <td>${esc(o.tipo)}</td><td>${esc(o.status)}</td><td>
+ <button class="azul" onclick="imprimirOS('${o.id}')">PDF</button>
+ <button class="verde" onclick="concluirOS('${o.id}')">Concluir</button>
+ </td></tr>`).join("")}</table></div></div>`;
 }
-
-["mData","coData","osData"].forEach(id=>{
-$(id).value=hoje();
-});
-
-atualizar();
+function salvarOS(){
+ if(!$("cliente").value)return alert("Selecione o cliente.");
+ const seq=Number(db.proximaOS||1);
+ db.ordens.push({
+ id:id(),numero:"OS-"+String(seq).padStart(6,"0"),
+ cliente:$("cliente").value,data:$("osData").value,
+ responsavel:$("osResp").value,tipo:$("osTipo").value,
+ status:$("osStatus").value,descricao:$("osDesc").value
+ });
+ db.proximaOS=seq+1;salvar();render();alert("OS salva!");
+}
+function concluirOS(oid){
+ const o=db.ordens.find(x=>x.id===oid);
+ if(!o)return;
+ o.status="CONCLUIDA";salvar();render();
+}
+function imprimirOS(oid){
+ const o=db.ordens.find(x=>x.id===oid);
+ if(!o)return;
+ imprimirDocumento(`Ordem de Serviço ${esc(o.numero)}`,
+ `<p><b>Cliente:</b> ${nomeCliente(o.cliente)}</p>
+ <p><b>Data:</b> ${esc(o.data)}</p>
+ <p><b>Responsável:</b> ${esc(o.responsavel)}</p>
+ <p><b>Serviço:</b> ${esc(o.tipo)}</p>
+ <p><b>Status:</b> ${esc(o.status)}</p>
+ <p><b>Descrição:</b> ${esc(o.descricao)}</p>`);
+}
+function estoque(){
+ const saldo={};
+ db.materiais.forEach(m=>saldo[m.nome]={qtd:0,un:m.un,grupo:m.grupo});
+ db.compras.forEach(c=>c.itens.forEach(x=>{
+ if(!saldo[x.nome])saldo[x.nome]={qtd:0,un:x.un,grupo:x.grupo};
+ saldo[x.nome].qtd+=x.qtd;
+ }));
+ db.vendas.forEach(c=>c.itens.forEach(x=>{
+ if(!saldo[x.nome])saldo[x.nome]={qtd:0,un:x.un,grupo:x.grupo};
+ saldo[x.nome].qtd-=x.qtd;
+ }));
+ return `<div class="card"><h2>Estoque de materiais</h2>
+ <p><small>Calculado pelas compras menos as vendas registradas.</small></p>
+ <div class="tabela"><table>
+ <tr><th>Material</th><th>Categoria</th><th>Saldo</th></tr>
+ ${Object.entries(saldo).map(([n,x])=>`<tr>
+ <td>${esc(n)}</td><td>${esc(x.grupo)}</td>
+ <td>${numero(x.qtd)} ${esc(x.un)}</td></tr>`).join("")}
+ </table></div></div>`;
+}
+function precos(){
+ return `<div class="card"><h2>Tabela de preços</h2>
+ <p>Cadastre preços por cidade e tipologia.</p>
+ <div class="grid">
+ <div><label>Material</label><select id="precoMaterial">
+ ${db.materiais.map((m,i)=>`<option value="${i}">${esc(m.nome)}</option>`).join("")}
+ </select></div>
+ <div><label>Cidade</label><input id="precoCidade" placeholder="SAO LUIS"></div>
+ <div><label>Tipologia</label><select id="precoTipo">
+ ${["SUCATEIRO","SAO LUIS","INTERIOR","ITAPECURU","IMPERATRIZ"].map(x=>`<option>${x}</option>`).join("")}
+ </select></div>
+ <div><label>Preço (R$)</label><input id="precoValor" type="number" min="0" step="0.01"></div>
+ </div><div class="acoes"><button class="verde" onclick="salvarPreco()">Salvar preço</button>
+ <button class="azul" onclick="imprimirPrecos()">Imprimir / PDF</button></div>
+ </div><div class="card"><h3>Preços cadastrados</h3>
+ <div class="tabela"><table><tr><th>Material</th><th>Cidade</th><th>Tipologia</th><th>Preço</th></tr>
+ ${db.precos.map(p=>`<tr><td>${esc(p.material)}</td><td>${esc(p.cidade)}</td>
+ <td>${esc(p.tipo)}</td><td>${dinheiro(p.valor)}</td></tr>`).join("")}
+ </table></div></div>`;
+}
+function salvarPreco(){
+ const m=db.materiais[Number($("precoMaterial").value)];
+ const cidade=normal($("precoCidade").value);
+ const tipo=$("precoTipo").value;
+ const valor=Number($("precoValor").value);
+ if(!cidade||$("precoValor").value===""||valor<0)return alert("Preencha cidade e preço.");
+ const anterior=db.precos.find(p=>p.material===m.nome&&p.cidade===cidade&&p.tipo===tipo);
+ if(anterior)anterior.valor=valor;
+ else db.precos.push({material:m.nome,cidade,tipo,valor});
+ m.preco=valor;
+ salvar();render();alert("Preço salvo!");
+}
+function imprimirPrecos(){
+ const linhas=db.precos.map(p=>`<tr><td>${esc(p.material)}</td>
+ <td>${esc(p.cidade)}</td><td>${esc(p.tipo)}</td>
+ <td>${dinheiro(p.valor)}</td></tr>`).join("");
+ imprimirDocumento("Tabela de Preços",
+ `<table><tr><th>Material</th><th>Cidade</th><th>Tipologia</th><th>Preço</th></tr>${linhas}</table>`);
+}
+function relatorios(){
+ const compras=db.compras.reduce((s,x)=>s+x.total,0);
+ const vendas=db.vendas.reduce((s,x)=>s+x.total,0);
+ const placas=db.compras.flatMap(x=>x.itens)
+ .filter(x=>x.grupo==="PLACAS").reduce((s,x)=>s+x.qtd,0);
+ return `<div class="card"><h2>Relatórios gerais</h2>
+ <div class="grid">
+ <div class="resumo">Total comprado<h2>${dinheiro(compras)}</h2></div>
+ <div class="resumo">Total vendido<h2>${dinheiro(vendas)}</h2></div>
+ <div class="resumo">Placas compradas<h2>${numero(placas)} kg</h2></div>
+ <div class="resumo">Ordens de serviço<h2>${db.ordens.length}</h2></div>
+ </div>
+ <h3>Histórico de movimentações</h3>
+ <div class="tabela"><table>
+ <tr><th>Data</th><th>Tipo</th><th>Cliente</th><th>Responsável</th><th>Total</th><th>Nota</th></tr>
+ ${[
+ ...db.compras.map(x=>({...x,tipo:"COMPRA"})),
+ ...db.vendas.map(x=>({...x,tipo:"VENDA"}))
+ ].sort((a,b)=>b.data.localeCompare(a.data)).map(x=>`<tr>
+ <td>${new Date(x.data).toLocaleDateString("pt-BR")}</td>
+ <td>${x.tipo}</td><td>${nomeCliente(x.cliente)}</td>
+ <td>${esc(x.responsavel)}</td><td>${dinheiro(x.total)}</td>
+ <td><button class="azul" onclick="imprimirNota('${x.tipo}','${x.id}')">PDF</button></td>
+ </tr>`).join("")}</table></div></div>`;
+}
+function financeiro(){
+ if(db.usuario!=="Diego"){
+ return `<div class="card"><h2>Financeiro</h2>
+ <p>Área reservada ao administrador.</p>
+ <p><small>Este bloqueio é apenas visual. Controle seguro exige autenticação no servidor.</small></p></div>`;
+ }
+ const compras=db.compras.reduce((s,x)=>s+x.total,0);
+ const vendas=db.vendas.reduce((s,x)=>s+x.total,0);
+ return `<div class="card"><h2>Financeiro administrativo</h2>
+ <div class="grid">
+ <div class="resumo"><b>Compras</b><h2>${dinheiro(compras)}</h2></div>
+ <div class="resumo"><b>Vendas</b><h2>${dinheiro(vendas)}</h2></div>
+ <div class="resumo"><b>Diferença bruta</b><h2>${dinheiro(vendas-compras)}</h2></div>
+ </div>
+ <p><small>A diferença bruta não representa lucro líquido: faltam despesas, custos, impostos e ajustes de estoque.</small></p>
+ </div>`;
+}
+function imprimirNota(tipo,registroId){
+ const lista=tipo==="COMPRA"?db.compras:db.vendas;
+ const r=lista.find(x=>x.id===registroId);
+ if(!r)return;
+ const c=db.clientes.find(x=>x.id===r.cliente);
+ const linhas=r.itens.map(x=>`<tr><td>${esc(x.nome)}</td>
+ <td>${numero(x.qtd)} ${esc(x.un)}</td>
+ <td>${dinheiro(x.valor)}</td>
+ <td>${dinheiro(x.qtd*x.valor)}</td></tr>`).join("");
+ const soma=(grupo)=>numero(r.itens.filter(x=>x.grupo===grupo).reduce((s,x)=>s+x.qtd,0));
+ const unidades=numero(r.itens.filter(x=>x.un==="UN").reduce((s,x)=>s+x.qtd,0));
+ imprimirDocumento(`Nota de ${tipo}`,
+ `<p><b>Cliente:</b> ${nomeCliente(r.cliente)}</p>
+ <p><b>Data:</b> ${new Date(r.data).toLocaleString("pt-BR")}</p>
+ <p><b>Responsável:</b> ${esc(r.responsavel)}</p>
+ <p><b>PIX do cliente:</b> ${esc(c?.pix||"Não informado")}</p>
+ <table><tr><th>Material</th><th>Quantidade</th><th>Preço</th><th>Total</th></tr>${linhas}</table>
+ <h2>Total: ${dinheiro(r.total)}</h2>
+ <p><b>Placas:</b> ${soma("PLACAS")} kg</p>
+ <p><b>Alumínio:</b> ${soma("ALUMINIO")} kg</p>
+ <p><b>Cobre:</b> ${soma("COBRE")} kg</p>
+ <p><b>Unidades:</b> ${unidades}</p>
+ <p><b>Observações:</b> ${esc(r.obs)}</p>`);
+}
+function imprimirDocumento(titulo,conteudo){
+ const w=window.open("","_blank");
+ if(!w)return alert("Permita janelas pop-up para imprimir.");
+ w.document.write(`<!DOCTYPE html><html lang="pt-BR"><head>
+ <meta charset="UTF-8"><title>${titulo}</title>
+ <style>body{font-family:Arial;padding:25px;color:#222}
+ h1{color:#087747;font-size:23px}table{width:100%;border-collapse:collapse}
+ td,th{border:1px solid #ccc;padding:8px;text-align:left}
+ th{background:#e8f5ee}p{line-height:1.5}</style></head><body>
+ <h1>THECNO ECO AMBIENTAL</h1><h2>${titulo}</h2>
+ ${conteudo}<hr><small>Documento gerado pelo sistema de gestão.</small>
+ </body></html>`);
+ w.document.close();
+ w.focus();
+ setTimeout(()=>w.print(),400);
+}
+render();
 </script>
 </body>
 </html>
